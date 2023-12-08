@@ -32,6 +32,9 @@ migrate_working_dir/
 .pub/
 /build/
 
+#web realated
+lib/generated_plugin_registrant.dart
+
 # Symbolication related
 app.*.symbols
 

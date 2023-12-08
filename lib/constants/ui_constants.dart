@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:twitter_clone/constants/assets_constants.dart';
@@ -9,6 +10,6 @@ class UIConstants{
       AssetsConstants.twitterLogo,
       color: Pallete.blueColor,
       height: 30,
-    ),
-  );
+      ),
+    );
 }
