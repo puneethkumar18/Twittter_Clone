@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/common/rounded_button.dart';
+import 'package:twitter_clone/constants/ui_constants.dart';
 import 'package:twitter_clone/features/auth/controller/authapi_controller.dart';
 import 'package:twitter_clone/features/auth/widgets/auth_field.dart';
 
@@ -20,13 +21,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   void dispose() {
     super.dispose();
-    emailcontroller;
-    passwordcontroller;
+    emailcontroller.dispose();
+    passwordcontroller.dispose();
   }
 
   void onLogIn(){
     ref.read(authControllerProvider.notifier).
-    signUp(email: emailcontroller.text, 
+    logIn(email: emailcontroller.text, 
     password: passwordcontroller.text, 
     context: context
     );
@@ -34,9 +35,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Twitter',style: TextStyle(color: Colors.blue),),
-      ),
+      appBar: UIConstants.appBar,
       body:  Padding(
         padding: const EdgeInsets.all(20),
         child: SingleChildScrollView(
@@ -52,6 +51,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 child:  RoundedButton(
                   ontap: onLogIn,
                   label: 'Done',
+                  color: Colors.black,
                   backgroundcolor: Colors.white70,),
                   ),
               const SizedBox(height: 30,),

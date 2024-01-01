@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:twitter_clone/common/loading_page.dart';
 import 'package:twitter_clone/common/rounded_button.dart';
+import 'package:twitter_clone/constants/ui_constants.dart';
 import 'package:twitter_clone/features/auth/controller/authapi_controller.dart';
 import 'package:twitter_clone/features/auth/view/login_page.dart';
 import 'package:twitter_clone/features/auth/widgets/auth_field.dart';
@@ -22,8 +23,8 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
   @override
   void dispose() {
     super.dispose();
-    emailcontroller;
-    passwordcontroller;
+    emailcontroller.dispose();
+    passwordcontroller.dispose();
   }
   
  void onSignUp(){
@@ -35,7 +36,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
     final isloading = ref.watch(authControllerProvider);
     return  Scaffold(
       appBar: AppBar(
-        title: const Text('Twitter',style: TextStyle(color: Colors.blue),),
+        title: UIConstants.appBar,
       ),
       body: isloading ? const Loader() : Padding(
         padding: const EdgeInsets.all(20),
@@ -52,6 +53,7 @@ class _SignUpPageState extends ConsumerState<SignUpPage> {
                 child:  RoundedButton(
                   ontap: onSignUp,
                   label: 'Done',
+                  color: Colors.black,
                   backgroundcolor: Colors.white70,),
                   ),
               const SizedBox(height: 30,),
