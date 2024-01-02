@@ -6,7 +6,7 @@ class UserModel {
   final String email;
   final String name;
   final List<String> followers;
-  final List<String> follwing;
+  final List<String> following;
   final String profilePic;
   final String bannerPic;
   final String uid;
@@ -16,7 +16,7 @@ class UserModel {
     required this.email,
     required this.name,
     required this.followers,
-    required this.follwing,
+    required this.following,
     required this.profilePic,
     required this.bannerPic,
     required this.uid,
@@ -39,7 +39,7 @@ class UserModel {
       email: email ?? this.email,
       name: name ?? this.name,
       followers: followers ?? this.followers,
-      follwing: follwing ?? this.follwing,
+      following: follwing ?? this.following,
       profilePic: profilePic ?? this.profilePic,
       bannerPic: bannerPic ?? this.bannerPic,
       uid: uid ?? this.uid,
@@ -54,7 +54,7 @@ class UserModel {
     result.addAll({'email': email});
     result.addAll({'name': name});
     result.addAll({'followers': followers});
-    result.addAll({'follwing': follwing});
+    result.addAll({'follwing': following});
     result.addAll({'profilePic': profilePic});
     result.addAll({'bannerPic': bannerPic});
     result.addAll({'uid': uid});
@@ -69,7 +69,7 @@ class UserModel {
       email: map['email'] ?? '',
       name: map['name'] ?? '',
       followers: List<String>.from(map['followers']),
-      follwing: List<String>.from(map['follwing']),
+      following: List<String>.from(map['follwing']),
       profilePic: map['profilePic'] ?? '',
       bannerPic: map['bannerPic'] ?? '',
       uid: map['uid'] ?? '',
@@ -84,7 +84,7 @@ class UserModel {
 
   @override
   String toString() {
-    return 'UserModel(email: $email, name: $name, followers: $followers, follwing: $follwing, profilePic: $profilePic, bannerPic: $bannerPic, uid: $uid, bio: $bio, isTwitterblue: $isTwitterblue)';
+    return 'UserModel(email: $email, name: $name, followers: $followers, follwing: $following, profilePic: $profilePic, bannerPic: $bannerPic, uid: $uid, bio: $bio, isTwitterblue: $isTwitterblue)';
   }
 
   @override
@@ -95,7 +95,7 @@ class UserModel {
       other.email == email &&
       other.name == name &&
       listEquals(other.followers, followers) &&
-      listEquals(other.follwing, follwing) &&
+      listEquals(other.following, following) &&
       other.profilePic == profilePic &&
       other.bannerPic == bannerPic &&
       other.uid == uid &&
@@ -108,7 +108,7 @@ class UserModel {
     return email.hashCode ^
       name.hashCode ^
       followers.hashCode ^
-      follwing.hashCode ^
+      following.hashCode ^
       profilePic.hashCode ^
       bannerPic.hashCode ^
       uid.hashCode ^

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:twitter_clone/common/common.dart';
+import 'package:twitter_clone/constants/assets_constants.dart';
 import 'package:twitter_clone/features/auth/controller/authapi_controller.dart';
 import 'package:twitter_clone/features/tweet/controller/tweet_controller.dart';
 import 'package:twitter_clone/features/tweet/widgets/tweet_card.dart';
@@ -15,7 +17,10 @@ import '../../../constants/appwrite_constants.dart';
 
 class UserProfile extends ConsumerWidget {
   final UserModel user;
-  const UserProfile(this.user, {super.key});
+  const UserProfile( {
+    required this.user,
+    super.key,
+    });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -48,7 +53,15 @@ class UserProfile extends ConsumerWidget {
                 child: OutlinedButton(
                   onPressed: (){
                     if(currentUser.uid == user.uid){
+                      //Edit Profile
                       Navigator.push(context, EditProfieView.route());
+                    }else{
+                      ref.read(userProfileControllerProvider.notifier).
+                      followUser(
+                        user: user, 
+                        context: context, 
+                        currentUser: currentUser
+                        );
                     }
                   }, 
                   style: ElevatedButton.styleFrom(
@@ -65,6 +78,8 @@ class UserProfile extends ConsumerWidget {
                   child:  Text(
                     currentUser.uid == user.uid ?
                     "Edit Profile":
+                    currentUser.following.contains(user.uid)?
+                    "Unfollow":
                     "Follow",
                     style: const  TextStyle(
                       color: Pallete.whiteColor,
@@ -81,12 +96,22 @@ class UserProfile extends ConsumerWidget {
             sliver: SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  Text(user.name , 
-                  style: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
+                  Row(
+                    children: [
+                      Text(user.name , 
+                    style: const TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    ),
+                    if(user.isTwitterblue)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 3.0),
+                      child: SvgPicture.asset(AssetsConstants.verifiedIcon),
+                    ),
+                    ]
                   ),
-                  ),
+                  
                   Text('@${user.name}' , 
                   style: const TextStyle(
                     fontSize: 17,
@@ -101,7 +126,7 @@ class UserProfile extends ConsumerWidget {
                   const SizedBox(height: 10,),
                   Row(
                     children: [
-                      FollowCount(count: user.follwing.length - 1, 
+                      FollowCount(count: user.following.length - 1, 
                       text: "Following",
                       ),
                       const SizedBox(width: 15,),

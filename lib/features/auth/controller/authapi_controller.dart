@@ -60,7 +60,7 @@ class AuthController extends  StateNotifier<bool> {
         UserModel userModel = UserModel(email: email,
          name: getNameFromEmail(email),
           followers: [],
-           follwing: [],
+           following: [],
             profilePic: "",
              bannerPic: "",
               uid: r.$id,
@@ -93,5 +93,15 @@ class AuthController extends  StateNotifier<bool> {
     final document =  await _userAPI.getUserData(uid);
     final updatedUser = UserModel.fromMap(document.data);
     return updatedUser;
+  }
+
+  void logout(BuildContext context)async{
+    final res = await _authAPI.logout();
+    res.fold((l) => null, (r) {
+      Navigator.pushAndRemoveUntil(
+        context, 
+       LoginPage.route(), 
+       (route) => false);
+    });
   }
 }

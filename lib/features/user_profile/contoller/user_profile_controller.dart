@@ -6,6 +6,8 @@ import 'package:twitter_clone/apis/storage_api.dart';
 import 'package:twitter_clone/apis/tweet_api.dart';
 import 'package:twitter_clone/apis/user_api.dart';
 import 'package:twitter_clone/core/core.dart';
+import 'package:twitter_clone/core/enums/notification_type_enum.dart';
+import 'package:twitter_clone/features/notifications/controller/controller/notification_controller.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 import 'package:twitter_clone/models/user_model.dart';
 
@@ -13,7 +15,8 @@ final userProfileControllerProvider = StateNotifierProvider<UserProfileControlle
   return UserProfileController(
     tweeAPI: ref.watch(tweetAPIProvider),
     storageAPI: ref.watch(storageAPIProvider),
-    userAPI: ref.watch(userAPIProvider)
+    userAPI: ref.watch(userAPIProvider),
+    notificationController: ref.watch(notificationControlleProvider.notifier),
     ) ;
 });
 
@@ -22,18 +25,26 @@ final getUserTweetsProvider = FutureProvider.family((ref,String uid) {
   return  userProfileController.getUserTweets(uid);
 });
 
+final getLatestUserPrifileDataProvider = StreamProvider((ref){
+  final userAPI = ref.watch(userAPIProvider);
+  return userAPI.getLatestUserProfileData();
+});
+
 class UserProfileController extends StateNotifier <bool>{
   final TweeAPI _tweeAPI;
   final StorageAPI _storageAPI;
   final UserAPI _userAPI;
+  final NotificationController _notificationController;
   UserProfileController({
     required TweeAPI tweeAPI,
     required StorageAPI storageAPI,
-    required UserAPI userAPI
+    required UserAPI userAPI,
+    required NotificationController notificationController,
   })
   :_tweeAPI = tweeAPI,
   _storageAPI = storageAPI,
   _userAPI = userAPI, 
+  _notificationController = notificationController,
   super(false);
 
   Future<List<Tweet>> getUserTweets(String uid)async{
@@ -57,13 +68,48 @@ class UserProfileController extends StateNotifier <bool>{
     if(profileFile != null){
       final profileUrl = await _storageAPI.uploadImage([profileFile]);
       userModel = userModel.copyWith(
-        bannerPic: profileUrl[0],
+        profilePic: profileUrl[0],
       );
     }
     final res = await _userAPI.updateUserData(userModel);
     state = false;
     res.fold((l) => showSnackBar(context,l.message), 
     (r) => Navigator.pop(context)
+    );
+  }
+
+  void followUser({
+    required UserModel user,
+    required BuildContext context,
+    required UserModel currentUser,
+  })async{
+    if(currentUser.following.contains(user.uid)){
+      user.followers.remove(currentUser.uid);
+      currentUser.following.remove(user.uid);
+    }else{
+      user.followers.add(currentUser.uid);
+      currentUser.following.add(user.uid);
+    }
+    user = user.copyWith(followers: user.followers);
+    currentUser = currentUser.copyWith(follwing: currentUser.following);
+
+    final res = await _userAPI.followUser(user);
+    res.fold((l) => 
+    showSnackBar(context,l.message), 
+    (r)async {
+      final res2 = await _userAPI.addToFolling(currentUser);
+      res2.fold((l) => 
+      showSnackBar(context,l.message), 
+      (r1){
+        _notificationController.createNotification(
+        text: '${currentUser.name} following you', 
+        postId: '', 
+        notificationType: NotificationType.follow, 
+        uid: user.uid,
+        );
+      }
+      );
+    }
     );
   }
   

@@ -12,6 +12,7 @@ import 'package:twitter_clone/features/tweet/views/twitter_reply_screen.dart';
 import 'package:twitter_clone/features/tweet/widgets/carousel_image.dart';
 import 'package:twitter_clone/features/tweet/widgets/hashtag_text.dart';
 import 'package:twitter_clone/features/tweet/widgets/tweet_icon_button.dart';
+import 'package:twitter_clone/features/user_profile/views/user_profile_view.dart';
 import 'package:twitter_clone/models/tweet_model.dart';
 import 'package:twitter_clone/theme/theme.dart';
 import 'package:get_time_ago/get_time_ago.dart' as timeago;
@@ -41,9 +42,14 @@ class TweetCard extends ConsumerWidget {
             children: [
               Container(
                 margin: const EdgeInsets.all(10),
-                child: CircleAvatar(
-                  backgroundImage: NetworkImage(user.profilePic),
-                  radius: 30,
+                child: GestureDetector(
+                  onTap: (){
+                    Navigator.push(context, UserProfileView.route(user));
+                  },
+                  child: CircleAvatar(
+                    backgroundImage: NetworkImage(user.profilePic),
+                    radius: 30,
+                  ),
                 ),
               ),
               Expanded(
@@ -71,7 +77,7 @@ class TweetCard extends ConsumerWidget {
                     Row(
                       children: [
                         Container(
-                          margin: const EdgeInsets.only(right: 5),
+                          margin:  EdgeInsets.only(right: user.isTwitterblue? 1 : 5),
                           child: Text(
                             user.name,
                             style: const TextStyle(
@@ -79,6 +85,11 @@ class TweetCard extends ConsumerWidget {
                               fontSize: 19
                             ),
                           ),
+                        ),
+                        if(user.isTwitterblue)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 5.0),
+                          child: SvgPicture.asset(AssetsConstants.verifiedIcon),
                         ),
                         Text(
                             '@${user.name}. ${

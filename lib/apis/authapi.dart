@@ -23,6 +23,7 @@ abstract class IAuthAPI{
   });
 
   Future<models.User?> currentUserAccount();
+  FutureEithervoid logout();
     
 }
 
@@ -64,6 +65,18 @@ class AuthAPI implements IAuthAPI{
         );
       }
     }
+    
+      @override
+      FutureEithervoid logout() async{
+     try {
+      await _account.deleteSession(sessionId: 'current');
+       return right(null);
+     } catch (e , stackTrace) {
+       return left(
+        Failure(e.toString(), stackTrace)
+       );
+     }
+      }
     
      
   }
